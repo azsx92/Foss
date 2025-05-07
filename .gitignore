@@ -36,4 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 /src/main/resources/firebase/foss-eae04-firebase-adminsdk-fbsvc-55fe25d150.json
+/src/main/resources/firebase/*.json
 
