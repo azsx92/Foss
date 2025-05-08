@@ -11,7 +11,16 @@
 - ![Foss.png](capture%2Fmysql%2FFoss.png)
 
 - 우선 mysql -u root -p 의 비번을 잃어버려서 초기화를 하는데 정말 많은 시간을 소비하고 힘들었다.
-- macOS에서 MariaDB 설치 시 발생하는 문제는 주로 잔여 파일 충돌과 시스템 권한 문제로 판단을 하였고 mariadb 를 지웠다가 다시 깔았다가 계속 안되는 문제가 발생 했다. 해결을 한것은 홈브로를 완전히 지우고 다시 마리아디비를 설치하니 문제가 해결되었다.
+- [MySQL 오류해결] ERROR 2002 (HY000): Can't connect to local MySQL server through socket '/tmp/mysql.sock'
+- macOS에서 MariaDB 설치 후 접속 시 발생하는 문제는 주로 잔여 파일 충돌과 시스템 권한 문제로 판단을 하였고 mariadb 를 지웠다가 다시 깔았다가 계속 안되는 문제가 발생 했다. 해결을 한것은 홈브로를 완전히 지우고 다시 마리아디비를 설치하니 문제가 해결되었다.
+
+
+>1. mysql.sock 파일에 대한 권한 문제 오류
+>2. mysql.sock 파일이 경로 및 심볼릭링크 정확하지 않아서 발생하는 오류
+>3. Mac 업데이트 등으로 인한 my.cnf 손상
+
+- 도움이 될만한 mysql 명령어는 여기를 참고 했다. 
+  - https://velog.io/@hyebinnn/MySQL-%EC%97%90%EB%9F%AC-ERROR-2002-HY000-Cant-connect-to-local-MySQL-server-through-socket-tmpmysql.sock
 ---
 ![macOs 시스템 권한주기.png](capture%2Fmysql%2FmacOs%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20%EA%B6%8C%ED%95%9C%EC%A3%BC%EA%B8%B0.png)
 ![mysql 문제.png](capture%2Fmysql%2Fmysql%20%EB%AC%B8%EC%A0%9C.png)
