@@ -1,10 +1,10 @@
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3307/foss_db
+    url: jdbc:mariadb://${DB_HOST:localhost}:${DB_PORT:3307}/${DB_NAME:foss_db}
     hikari:
-      username: foss
-      password: 6842
+      username: ${DB_USERNAME}
+      password: ${DB_PASSWORD}
 
   jpa:
     hibernate:
