@@ -20,5 +20,16 @@ public class TopicToken {
     @Column(nullable = false, unique = true)
     private Long id;
 
-    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "topic_id")
+    private Topic topic;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "token_id")
+    private Token token;
+
+    public TopicToken(Topic topic, Token token) {
+        this.topic = topic;
+        this.token = token;
+    }
 }

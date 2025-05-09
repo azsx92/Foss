@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,5 +23,8 @@ public class Topic {
 
     @Column
     private String tokenName;
+
+    @OneToMany(mappedBy = "topic")
+    private List<TopicToken> topicTokens;
 
 }

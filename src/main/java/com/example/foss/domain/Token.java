@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,8 +21,6 @@ public class Token {
     @Column(nullable = false, unique = true)
     private Long id;
 
-    @Column
-    private Long memberId;
 
     @Column(unique = true)
     private String tokenValue;
@@ -29,6 +28,10 @@ public class Token {
     @Column(nullable = false)
     private LocalDate expirationDate;
 
+    @OneToMany(mappedBy = "token")
+    private List<TopicToken> topicTokens;
 
-    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 }

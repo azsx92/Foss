@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Getter
 @AllArgsConstructor
@@ -25,5 +27,18 @@ public class Member {
     @Column
     private String password;
 
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,
+            CascadeType.REMOVE}, orphanRemoval = true)
+    private List<Token> tokens;
 
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,
+            CascadeType.REMOVE}, orphanRemoval = true)
+    private List<TopicMember> topicMembers;
+
+    @Builder
+    public Member(Long id, String email, String password) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+    }
 }

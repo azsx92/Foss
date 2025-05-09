@@ -20,15 +20,16 @@ public class TopicMember {
     @Column(nullable = false, unique = true)
     private Long id;
 
-    @Column
-    private Long memberId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "topic_id")
+    private Topic topic;
 
-    @Column(unique = true)
-    private String tokenValue;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
-    @Column(nullable = false)
-    private LocalDate expirationDate;
-
-
-    
+    public TopicMember(Topic topic, Member member) {
+        this.topic = topic;
+        this.member = member;
+    }
 }
