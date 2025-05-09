@@ -2,6 +2,53 @@
 ## 왜 파이어베이스를 사용하게 되었는가?
 - 파이어베이스는 초급자인 사람도 쉽게 접근할 수 있는 서비스를 제공하면 프리티어로 가격 부담이 이 적어 많은 사용자가 이용하고 있다.
 - 그래서 나는 여기서 FCM 과 Topic 서비스를 간단하게 기능을 구현할 예정이다.
+---
+## 목표
+- Firebase Cloud Messaging 이해
+- SpringBoot와 FCM 연동
+- Push 알림 구현
+- FCM Token 과 Topic을 백엔드에서 관리하는 방법 터득
+- FCM 성능 효율
+---
+## 목차
+- FireBase란?
+- ![Firebase란.png](capture%2Ffirebase%2FFirebase%EB%9E%80.png)
+- Firebase Cloud Messaging(FCM)
+- ![fcm 이란.png](capture%2Ffirebase%2Ffcm%20%EC%9D%B4%EB%9E%80.png)
+- FCM 메시지
+- ![공식문서 예시.png](capture%2Ffirebase%2Ffcm%2F%EA%B3%B5%EC%8B%9D%EB%AC%B8%EC%84%9C%20%EC%98%88%EC%8B%9C.png)
+- ![여러 플랫폼 타켓.png](capture%2Ffirebase%2Ffcm%2F%EC%97%AC%EB%9F%AC%20%ED%94%8C%EB%9E%AB%ED%8F%BC%20%ED%83%80%EC%BC%93.png)
+- ![플래폼에 맞게 재정의 가능.png](capture%2Ffirebase%2Ffcm%2F%ED%94%8C%EB%9E%98%ED%8F%BC%EC%97%90%20%EB%A7%9E%EA%B2%8C%20%EC%9E%AC%EC%A0%95%EC%9D%98%20%EA%B0%80%EB%8A%A5.png)
+---
+- FCM - Token & Topic
+- Token
+- ![토큰이란.png](capture%2Ffirebase%2Ftoken%2F%ED%86%A0%ED%81%B0%EC%9D%B4%EB%9E%80.png)
+- ![토큰을 통한 특정기기 메시지 전송.png](capture%2Ffirebase%2Ftoken%2F%ED%86%A0%ED%81%B0%EC%9D%84%20%ED%86%B5%ED%95%9C%20%ED%8A%B9%EC%A0%95%EA%B8%B0%EA%B8%B0%20%EB%A9%94%EC%8B%9C%EC%A7%80%20%EC%A0%84%EC%86%A1.png)
+- ![토큰을 통해 리스트로 전송.png](capture%2Ffirebase%2Ftoken%2F%ED%86%A0%ED%81%B0%EC%9D%84%20%ED%86%B5%ED%95%B4%20%EB%A6%AC%EC%8A%A4%ED%8A%B8%EB%A1%9C%20%EC%A0%84%EC%86%A1.png)
+- ![토큰을 통해 특정기기 타겟팅.png](capture%2Ffirebase%2Ftoken%2F%ED%86%A0%ED%81%B0%EC%9D%84%20%ED%86%B5%ED%95%B4%20%ED%8A%B9%EC%A0%95%EA%B8%B0%EA%B8%B0%20%ED%83%80%EA%B2%9F%ED%8C%85.png)
+- Topic
+- ![토픽이란.png](capture%2Ffirebase%2Ftopic%2F%ED%86%A0%ED%94%BD%EC%9D%B4%EB%9E%80.png)
+- 토픽 구독 과 취소
+- ![topic 구독.png](capture%2Ffirebase%2Ftopic%2Ftopic%20%EA%B5%AC%EB%8F%85.png)
+- ![토픽 구독 취소.png](capture%2Ffirebase%2Ftopic%2F%ED%86%A0%ED%94%BD%20%EA%B5%AC%EB%8F%85%20%EC%B7%A8%EC%86%8C.png)
+- 토픽을 통한 메시지 전송
+- ![토픽을 통한 알림전송 아키텍처.png](capture%2Ffirebase%2Ftopic%2F%ED%86%A0%ED%94%BD%EC%9D%84%20%ED%86%B5%ED%95%9C%20%EC%95%8C%EB%A6%BC%EC%A0%84%EC%86%A1%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.png)
+- ![토픽을 통한 알림전송.png](capture%2Ffirebase%2Ftopic%2F%ED%86%A0%ED%94%BD%EC%9D%84%20%ED%86%B5%ED%95%9C%20%EC%95%8C%EB%A6%BC%EC%A0%84%EC%86%A1.png)
+- ![토픽으로 메시지 전송.png](capture%2Ffirebase%2Ftopic%2F%ED%86%A0%ED%94%BD%EC%9C%BC%EB%A1%9C%20%EB%A9%94%EC%8B%9C%EC%A7%80%20%EC%A0%84%EC%86%A1.png)
+- Push 메세지란?
+- ![push 메세지란.png](capture%2Ffirebase%2Fpush%20%EB%A9%94%EC%84%B8%EC%A7%80%EB%9E%80.png)
+- ![push 메세지.png](capture%2Ffirebase%2Fpush%20%EB%A9%94%EC%84%B8%EC%A7%80.png)
+- notification message
+- ![notipication message.png](capture%2Ffirebase%2Fnotipication%20message.png)
+- data message
+- ![data message.png](capture%2Ffirebase%2Fdata%20message.png)
+- 아키텍처 및 로직 정리
+- Firebase 환경설정
+- 스프링부트 프로젝트 설정
+- FCM - 스프링부트 실습
+- Token - Topic 관리
+- FCM 성능 효울
+
 ## 개발 환경
 - jdk 17
 - springboot version : 3.2.0
