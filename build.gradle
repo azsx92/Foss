@@ -18,13 +18,20 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'com.google.firebase:firebase-admin:9.2.0' //FCM
+    implementation 'org.springframework.boot:spring-boot-starter-web'   // Spring Boot Web
+    implementation 'com.google.firebase:firebase-admin:9.2.0'           // Google Firebase Admin
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc' // jdbc
+
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.16.1'     // Jackson Data Bind
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // jpa
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     compileOnly('org.projectlombok:lombok')
     annotationProcessor('org.projectlombok:lombok')
+    // Mariadb
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
 }
 
 tasks.named('test') {
