@@ -36,7 +36,7 @@ public class Member {
     private List<TopicMember> topicMembers;
 
     @Builder
-    public Member(Long id, String email, String password) {
+    public Member(Long id, String email, String name, String password, String major, String phone) {
         this.id = id;
         this.email = email;
         this.password = password;
