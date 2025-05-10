@@ -197,3 +197,88 @@ public class MyException extends RuntimeException {
 [^10]: https://velog.io/@mini_mouse_/2022.07.28%EC%9E%90%EB%B0%94-%EC%A0%95%EB%A6%AC%EC%98%88%EC%99%B8%EB%A5%BC-%EB%8B%A4%EB%A3%A8%EB%8A%94-%EB%B0%A9%EB%B2%95
 
 ---
+<img src="https://r2cdn.perplexity.ai/pplx-full-logo-primary-dark%402x.png" class="logo" width="120"/>
+
+# @Component
+
+@Configuration
+두개의 차이점이 뭐야 둘다 bean 을 주입해주는 어노테이션 아닌야?
+
+두 어노테이션 모두 Spring에서 **Bean을 등록**하는 데 사용되지만, **역할과 동작 방식에 중요한 차이**가 있습니다.
+
+---
+
+## 1. 공통점
+
+- 둘 다 스프링 컨테이너에 Bean을 등록하는 역할을 합니다.
+- `@Configuration`은 내부적으로 `@Component`를 포함하고 있습니다. 즉, `@Configuration`으로 선언된 클래스도 컴포넌트 스캔에 의해 Bean으로 등록됩니다[^1][^2][^6].
+
+---
+
+## 2. 차이점
+
+| 구분 | @Component | @Configuration |
+| :-- | :-- | :-- |
+| 목적 | 일반적인 Bean 등록(서비스, 레포지토리 등) | 자바 기반의 설정 클래스(Bean 팩토리 역할) |
+| 내부 구조 | 단순히 Bean 등록만 함 | @Component 포함 + CGLIB 프록시로 Bean 관리 |
+| @Bean 메서드 | @Bean 메서드 사용 가능하나, 각 호출마다 새 객체 생성 | @Bean 메서드가 싱글톤으로 관리됨(프록시로 보장) |
+| 주요 용도 | 주로 서비스, 컴포넌트, 레포지토리 등 비즈니스 객체 | 외부 라이브러리, 설정, 복잡한 Bean 생성 등 |
+| Bean 간 의존성 | @Bean 메서드 간 의존성 보장 안 됨 | @Bean 메서드 간 의존성 자동 보장(싱글톤) |
+
+### 핵심 차이: **@Bean 메서드의 동작**
+
+- `@Configuration` 클래스의 `@Bean` 메서드는 CGLIB 프록시로 감싸져, 여러 번 호출해도 항상 같은 Bean(싱글톤)을 반환합니다.
+- `@Component` 클래스의 `@Bean` 메서드는 프록시가 적용되지 않으므로, 메서드를 여러 번 호출하면 매번 새로운 객체가 생성될 수 있습니다[^1][^2][^5].
+
+---
+
+## 3. 언제 각각을 써야 할까?
+
+- **일반적인 서비스, 컴포넌트, 레포지토리 등**은 `@Component`(혹은 그 하위 어노테이션: `@Service`, `@Repository`, `@Controller`)를 사용합니다.
+- **설정 클래스(여러 Bean을 생성/조합, 외부 라이브러리 초기화 등)**는 반드시 `@Configuration`을 사용해야 합니다.
+
+---
+
+## 4. 결론
+
+- `@Configuration`은 `@Component`의 특성을 포함하면서, Bean 간의 의존성과 싱글톤 보장을 위해 프록시를 사용해 더 강력한 설정 기능을 제공합니다.
+- 단순 Bean 등록은 `@Component`, 여러 Bean을 생성하거나 Bean 간 의존성이 중요한 설정 클래스는 `@Configuration`을 사용하세요.
+
+---
+
+> **정리:**
+> `@Configuration`은 `@Component`의 특성을 포함하지만, Bean 간 관계와 싱글톤 보장을 위해 반드시 설정 클래스에는 `@Configuration`을 사용해야 합니다.
+> `@Component`는 단순 Bean 등록용입니다[^1][^2][^4][^5][^6].
+
+<div style="text-align: center">⁂</div>
+
+[^1]: https://stackoverflow.com/questions/39174669/what-is-the-difference-between-configuration-and-component-in-spring
+
+[^2]: https://unluckyjung.github.io/spring/2021/06/11/Spring-Configuration-VS-Component/
+
+[^3]: https://9327144.tistory.com/entry/Spring-Configuration과-Component-그리고-Bean
+
+[^4]: https://yangtaeyoung.github.io/blog/spring/spring-configuration-vs-component/
+
+[^5]: https://velog.io/@hajju/Configuration-Component의-차이점
+
+[^6]: https://www.reddit.com/r/SpringBoot/comments/w6swvh/is_my_understanding_of_the_difference_between/
+
+[^7]: https://velog.io/@hongjunland/Configuration-vs-Component
+
+[^8]: https://silver-programmer.tistory.com/entry/Configuration-Bean-vs-Component
+
+[^9]: https://devoong2.tistory.com/entry/Spring-Component-vs-Configuration
+
+[^10]: https://velog.io/@hyeokjinon/Configuration-vs-Component
+
+[^11]: https://jhkimmm.tistory.com/18
+
+[^12]: https://any-ting.tistory.com/150
+
+[^13]: https://kth990303.tistory.com/395
+
+[^14]: https://blog.naver.com/sthwin/222131873998
+
+[^15]: https://www.youtube.com/watch?v=y9g4CnS-1jY
+
