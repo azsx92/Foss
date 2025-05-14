@@ -5,6 +5,7 @@ import com.example.foss.domain.Token;
 import com.example.foss.dto.AlarmDto;
 import com.example.foss.dto.ApiResponseDto;
 import com.example.foss.dto.TokenNotificationRequestDto;
+import com.example.foss.dto.TopicNotificationRequestDto;
 import com.example.foss.exception.CustomErrorCode;
 import com.example.foss.exception.CustomException;
 import com.example.foss.repository.MemberRepository;
@@ -70,7 +71,7 @@ public class FCMService {
         ResponseEntity.ok().body(ApiResponseDto.builder()
                 .successStatus(HttpStatus.OK)
                 .successContent("푸시 알림 성공")
-                .date(tokens)
+                .data(tokens)
                 .build());
     }
 
@@ -112,6 +113,30 @@ public class FCMService {
                     .build());
         }
 
+    public ResponseEntity<ApiResponseDto> sendByTopic(TopicNotificationRequestDto topicNotificationRequestDto) {
+        Message message = Message.builder()
+                .setTopic(topicNotificationRequestDto.getTopic())
+                .setNotification(Notification.builder()
+                        .setTitle(topicNotificationRequestDto.getTitle())
+                        .setBody(topicNotificationRequestDto.getContent())
+                        .setImage(topicNotificationRequestDto.getImg())
+                        .build())
+                .putData("click_action", topicNotificationRequestDto.getUrl())
+                .build();
+
+        try {
+            FirebaseMessaging.getInstance().send(message);
+        } catch (FirebaseMessagingException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ResponseEntity.ok().body(ApiResponseDto.builder()
+                .successStatus(HttpStatus.OK)
+                .successContent("푸쉬 알림 성공")
+                .data(topicNotificationRequestDto.getTopic())
+                .build()
+        );
+    }
     public void subscribeToTopic(String topicName, List<String> tokens) {
         List<String> failedTokens = new ArrayList<>();
 
@@ -164,5 +189,7 @@ public class FCMService {
             tokenRepository.deleteByTokenValueIn(failedTokens);
         }
     }
+
+
 }
 

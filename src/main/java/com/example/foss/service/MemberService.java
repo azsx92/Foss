@@ -44,7 +44,7 @@ public class MemberService {
         return ResponseEntity.ok().body(ApiResponseDto.builder()
                 .successStatus(HttpStatus.OK)
                 .successContent("화원가입 완료")
-                .date(request.getEmail())
+                .data(request.getEmail())
                 .build()
         );
     }
