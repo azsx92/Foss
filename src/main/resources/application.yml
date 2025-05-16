@@ -16,5 +16,12 @@ spring:
         format_sql: true
         show_sql: true
 
-fcm :
-    firebase_config_path : firebase/foss-eae04-firebase-adminsdk-fbsvc-a0577cfa14.json
+  jwt:
+    secret: "iwtD3sbtcrQeF9pw2tBpUAMdJqH2IrMSzuYQDIY9JMbGxGCfkFRPvq7KACOFrtairwbAzdQvrlm43/ViNUdzHqNFPwKVYowBOmbdpyTsCH9mfn9aUGNrIGJd5AaDModln372T9p9YA9evFWoLTkOS0NMGvEaCGa7f9VNVbKBZWXdAM44z5u0AWfzRvb+lrH3TzGapNbjzf3qk9Rvj+m/JeGl94kX1WUHzzyf6VKc55RzGA2dz1z4RNG/7UYNdZ2EzimGmC2gHXAM5mlZHSs08fM1OPqhzu5kCvwOWFvB6g0DF8tcf5/PpOf4DYSuWgsgPtwaufEJb+RhvJfnLLf0A==%"  # Base64 인코딩 256비트 키
+    token:
+      access-expiration-time: 3600000    # 1시간(ms)
+      refresh-expiration-time: 2592000000 # 30일(ms)
+      issuer: "foss"
+
+fcm:
+  firebase_config_path: firebase/foss-eae04-firebase-adminsdk-fbsvc-a0577cfa14.json

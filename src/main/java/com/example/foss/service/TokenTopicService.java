@@ -154,8 +154,8 @@ public class TokenTopicService {
 
             // 각 토픽에 대해 새 토큰 구독 처리
             for (Topic topic : subscribedTopics) {
-                fcmService.subscribeToTopic(topic.getTokenName(), Collections.singletonList(token.getTokenValue()));
-               log.info("새 토큰으로 " + topic.getTokenName() + " 토픽을 다시 구독합니다.");
+                fcmService.subscribeToTopic(topic.getTopicName(), Collections.singletonList(token.getTokenValue()));
+               log.info("새 토큰으로 " + topic.getTopicName() + " 토픽을 다시 구독합니다.");
             }
             
         }
@@ -182,7 +182,7 @@ public class TokenTopicService {
 
         // 각 TopicToken에 대홰 구독 해지
         topicTokens.forEach(topicToken -> {
-            fcmService.unsubscribeToTopic(topicToken.getTopic().getTokenName(), tokenValues);
+            fcmService.unsubscribeToTopic(topicToken.getTopic().getTopicName(), tokenValues);
         });
 
         // 만료된 토큰 삭제
