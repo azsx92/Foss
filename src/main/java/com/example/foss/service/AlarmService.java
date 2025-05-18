@@ -31,6 +31,10 @@ public class AlarmService {
     private final AlarmRepository alarmRepository;
     private final MemberRepository memberRepository;
     private final FCMService fcmService;
+// AlarmService.java
+
+
+
 
     // Controller 의 호출없이 주기적으로 계속 실행
     @Scheduled(fixedRate = 10000)
@@ -47,9 +51,10 @@ public class AlarmService {
         for (Alarm alarm : alarms) {
             LocalDate alarmDate = alarm.getAlarmDateTime().toLocalDate();
             LocalTime alarmTime = alarm.getAlarmDateTime().toLocalTime();
-
-            if (alarm.getAlarmDateTime().toLocalDate() == alarmDate && alarm.getAlarmDateTime().getHour() == nowHour
-                    && alarm.getAlarmDateTime().getMinute() == now.getMinute()) {
+            log.info("현재 시간: {}", now);
+            log.info("알림 시간: {}", alarmTime);
+            if (alarm.getAlarmDateTime().toLocalDate() == alarmDate && alarm.getAlarmDateTime().getHour() == nowHour &&
+                    alarm.getAlarmDateTime().getMinute() == nowMinute) {
                 AlarmDto alarmDto = AlarmDto.builder()
                         .title(alarm.getTitle())
                         .content(alarm.getContent())
@@ -65,7 +70,7 @@ public class AlarmService {
     @Transactional
     public ResponseEntity<ApiResponseDto> createNotification(PostNotificationDto postNotificationDto, Principal principal) {
         String userEmail = principal.getName();
-
+        System.out.println("ddddddddd" + userEmail);
         // 사용자 조회
         Member member = memberRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));

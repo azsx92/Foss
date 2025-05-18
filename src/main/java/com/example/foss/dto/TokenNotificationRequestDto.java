@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TokenNotificationRequestDto {
-
+    private String token; // 필수
     private String title;
     private String content;
     private String url;

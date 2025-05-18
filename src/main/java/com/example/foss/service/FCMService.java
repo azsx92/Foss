@@ -59,6 +59,8 @@ public class FCMService {
             } catch (FirebaseMessagingException e) {
                 failedTokens.add(token);
                 log.error("Failed to send notification to token: " + token.getTokenValue(), e);
+                log.error("FCM 전송 실패: {}", e.getErrorCode(), e);
+                throw new CustomException(CustomErrorCode.FCM_SEND_FAILED);
             }
         }
 
@@ -71,7 +73,7 @@ public class FCMService {
         ResponseEntity.ok().body(ApiResponseDto.builder()
                 .successStatus(HttpStatus.OK)
                 .successContent("푸시 알림 성공")
-                .data(tokens)
+                .Data(tokens)
                 .build());
     }
 
@@ -133,7 +135,7 @@ public class FCMService {
         return ResponseEntity.ok().body(ApiResponseDto.builder()
                 .successStatus(HttpStatus.OK)
                 .successContent("푸쉬 알림 성공")
-                .data(topicNotificationRequestDto.getTopic())
+                .Data(topicNotificationRequestDto.getTopic())
                 .build()
         );
     }
@@ -164,7 +166,7 @@ public class FCMService {
         }
     }
 
-    public void unsubscribeToTopic(String topic, List<String> tokens) {
+    public void unsubscribeFromTopic(String topic, List<String> tokens) {
         List<String> failedTokens = new ArrayList<>();
 
         try {

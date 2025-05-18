@@ -21,6 +21,7 @@ public class TopicController {
 
     @PostMapping("/subscribe")
     public ResponseEntity<ApiResponseDto> subscribeToTopic(@RequestBody TopicRequest topicRequest, Principal principal) throws IOException {
+
         topicService.subscribeToTopics(topicRequest, principal);
         return ResponseEntity.ok().body(ApiResponseDto.builder()
                 .successStatus(HttpStatus.OK)

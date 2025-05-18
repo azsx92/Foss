@@ -16,5 +16,5 @@ public class ApiResponseDto {
 
     private HttpStatus successStatus;
     private String successContent;
-    private Object data;
+    private Object Data;
 }

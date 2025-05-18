@@ -15,43 +15,45 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class MemberService {
-    private final MemberRepository memberRepository ;
+    private final MemberRepository memberRepository;
     private final PasswordEncoder encoder;
     private final JwtUtil jwtUtil;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder BCryptEncoder;
 
     @Transactional
-    public ResponseEntity<ApiResponseDto> register(RegisterRequest request) {
-        Optional<Member> member = memberRepository.findByEmail(request.getEmail());
+    public ResponseEntity<ApiResponseDto> register(RegisterRequest registerRequest) throws IOException {
+        Optional<Member> member = memberRepository.findByEmail(registerRequest.getEmail());
         if (member.isPresent()) {
             throw new CustomException(CustomErrorCode.DUPLICATED_EMAIL);
         }
 
-        String password = bCryptPasswordEncoder.encode(request.getPassword());
+        String password = BCryptEncoder.encode(registerRequest.getPassword());
 
         Member newMember = Member.builder()
-                .email(request.getEmail())
+                .email(registerRequest.getEmail())
                 .password(password)
                 .build();
+
         memberRepository.save(newMember);
 
         return ResponseEntity.ok().body(ApiResponseDto.builder()
                 .successStatus(HttpStatus.OK)
-                .successContent("화원가입 완료")
-                .data(request.getEmail())
+                .successContent("회원가입 완료")
+                .Data(registerRequest.getEmail())
                 .build()
         );
+
     }
 
     @Transactional
     public ResponseEntity<LoginResponse> login(MemberDto.LoginRequest loginRequest) {
-
         String email = loginRequest.getEmail();
         String password = loginRequest.getPassword();
         Member member = memberRepository.findByEmail(email)
@@ -81,6 +83,7 @@ public class MemberService {
         return ResponseEntity.ok().body(loginResponse);
     }
 
+
     public LoginResponse reissueAccessToken(ReissueTokenDto refreshToken) {
         String token = refreshToken.getRefreshToken();
         if (!jwtUtil.validateToken(token)) {
@@ -89,8 +92,7 @@ public class MemberService {
 
         Long memberId = jwtUtil.getUserId(token);
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
+        Member member = memberRepository.findById(memberId).orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
 
         MemberDto.MemberInfoDto memberInfoDto = MemberDto.MemberInfoDto.builder()
                 .memberId(member.getId())
@@ -99,6 +101,7 @@ public class MemberService {
                 .build();
 
         String accessToken = jwtUtil.createAccessToken(memberInfoDto);
+
         return LoginResponse.builder()
                 .id(member.getId())
                 .grantType("Authorization")
@@ -107,7 +110,9 @@ public class MemberService {
                 .build();
     }
 
-    public boolean duplicateEmail(String email) {
+    public boolean duplicateEmail (String email) {
         return !memberRepository.existsByEmail(email);
     }
+
+
 }

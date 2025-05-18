@@ -28,11 +28,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class TokenTopicService {
-    private final TokenRepository tokenRepository;
     private final TopicRepository topicRepository;
+    private final TokenRepository tokenRepository;
     private final TopicTokenRepository topicTokenRepository;
     private final TopicMemberRepository topicMemberRepository;
-    private final MemberRepository memberRepository ;
+    private final MemberRepository memberRepository;
     private final FCMService fcmService;
 
     // 토큰 만료 기간 상수 정의
@@ -47,12 +47,12 @@ public class TokenTopicService {
         Topic topic = topicRepository.findByTopicName(topicName)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.TOPIC_NOT_FOUND));
 
-        // 사용자 정보는 스프링시큐리티 컨택스티에서 가져옴
+        // 사용자 정보는 스프링시큐리티 컨텍스트에서 가져옴
         String memberEmail = principal.getName();
 
         // 현재 사용자 정보 가져오기
         Member member = memberRepository.findByEmail(memberEmail)
-                .orElseThrow(() -> new CustomException(CustomErrorCode.TOPIC_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
 
         // 이미 해당 토픽에 구독 중인지 확인
         if (topicMemberRepository.existsByTopicAndMember(topic, member)) {
@@ -67,16 +67,15 @@ public class TokenTopicService {
                 .topic(topic)
                 .member(member)
                 .build();
-
         topicMemberRepository.save(topicMember);
 
-        // 토피과 토큰을 매핑하여 저장 -> 사용자가 가지고 있는 토큰들이 topic을 구독
-        List<TopicToken> topicTokens  = memberTokens.stream()
+        // 토픽과 토큰을 매핑하여 저장 -> 사용자가 가지고 있는 토큰들이 topic을 구독
+        List<TopicToken> topicTokens = memberTokens.stream()
                 .map(token -> new TopicToken(topic, token))
                 .collect(Collectors.toList());
         topicTokenRepository.saveAll(topicTokens);
 
-        // FCM 서비스를  사용하여 토픽에 대한 구독 진행
+        // FCM 서비스를 사용하여 토픽에 대한 구독 진행
         List<String> tokenValues = memberTokens.stream()
                 .map(Token::getTokenValue)
                 .collect(Collectors.toList());
@@ -92,14 +91,14 @@ public class TokenTopicService {
         Topic topic = topicRepository.findByTopicName(topicName)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.TOPIC_NOT_FOUND));
 
-        // 사용자 정보는 스프링 시큐리티 컨텍스트에서 가져옴
+        // 사용자 정보는 스프링시큐리티 컨텍스트에서 가져옴
         String memberEmail = principal.getName();
 
         // 현재 사용자 정보 가져오기
         Member member = memberRepository.findByEmail(memberEmail)
                 .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
 
-        // 멤버가 구독하고 잇는 해당 토픽을 찾아서 삭제
+        // 멤버가 구독하고 있는 해당 토픽을 찾아서 삭제
         topicMemberRepository.deleteByTopicAndMember(topic, member);
 
         // 해당 토픽을 구독하는 모든 TopicToken 삭제
@@ -111,22 +110,23 @@ public class TokenTopicService {
         List<String> tokenValues = memberTokens.stream()
                 .map(Token::getTokenValue)
                 .collect(Collectors.toList());
-        log.info(topicName + "구독이 취소되었습니다.");
-        fcmService.unsubscribeToTopic(topicName, tokenValues);
+        log.info(topicName + " 구독이 취소 되었습니다.");
+        fcmService.unsubscribeFromTopic(topicName, tokenValues);
     }
 
+    @Transactional
     public void saveFCMToken(MemberDto.LoginRequest loginRequest) {
         log.info("saveFCMToken 메서드 호출");
 
-        // 현재 사용자 정보 가져오기
+        // 사용자 조회
         Member member = memberRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new CustomException(CustomErrorCode.USER_NOT_FOUND));
 
-        // token 이 이미 있는지 체크
+        // token이 이미 있는지 체크
         Optional<Token> existingToken = tokenRepository.findByTokenValueAndMember(loginRequest.getFcmToken(), member);
         if (existingToken.isPresent()) {
             Token token = existingToken.get();
-            log.info("이미 존재하는 토큰: " + existingToken.get().getTopicTokens());
+            log.info("이미 존재하는 토큰: " + existingToken.get().getTokenValue());
             token.setExpirationDate(LocalDate.now().plusMonths(2));
             tokenRepository.save(token);
         } else {
@@ -155,19 +155,18 @@ public class TokenTopicService {
             // 각 토픽에 대해 새 토큰 구독 처리
             for (Topic topic : subscribedTopics) {
                 fcmService.subscribeToTopic(topic.getTopicName(), Collections.singletonList(token.getTokenValue()));
-               log.info("새 토큰으로 " + topic.getTopicName() + " 토픽을 다시 구독합니다.");
+                log.info("새 토큰으로 " + topic.getTopicName() + " 토픽을 다시 구독합니다.");
             }
-            
         }
     }
 
-    // 매일 00: 00(자정) 에 트리거됩니다.(0 0 0 ** ?). 따라서 하루에 한 번 작업이 실행됩니다.
+    // 매일 00:00(자정)에 트리거됩니다(0 0 0 * * ?). 따라서 하루에 한 번 작업이 실행됩니다.
     // 매일 자정에 실행되는 스케줄링 작업
-    //@Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
-    public void unsubscribeExpiredTokens(){
+    public void unsubscribeExpiredTokens() {
         LocalDate now = LocalDate.now();
-        log.info("오늘의 날짜 :" + now);
+        log.info("오늘의 날짜 : " + now);
 
         // 만료된 토큰을 가져옵니다.
         List<Token> expiredTokens = tokenRepository.findByExpirationDate(now);
@@ -180,13 +179,15 @@ public class TokenTopicService {
                 .map(Token::getTokenValue)
                 .collect(Collectors.toList());
 
-        // 각 TopicToken에 대홰 구독 해지
+        // 각 TopicToken에 대해 구독 해지
         topicTokens.forEach(topicToken -> {
-            fcmService.unsubscribeToTopic(topicToken.getTopic().getTopicName(), tokenValues);
+            fcmService.unsubscribeFromTopic(topicToken.getTopic().getTopicName(), tokenValues);
         });
 
         // 만료된 토큰 삭제
-        topicTokenRepository.deleteAll(topicTokens); // TopicTokenRepository 에서 먼저 삭제하고 TokenRepository에서 삭제
+        topicTokenRepository.deleteAll(topicTokens); // TopicTokenRepository에서 먼저 삭제하고 TokenRepository에서 삭제
         tokenRepository.deleteAll(expiredTokens);
     }
+
+
 }

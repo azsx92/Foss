@@ -28,6 +28,10 @@ public class TopicMember {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    //@Column(nullable = true)
+    //private LocalDate expirationDate;
+    //private LocalDate expirationDate = LocalDate.now().plusMonths(2); // 기본값
+
     public TopicMember(Topic topic, Member member) {
         this.topic = topic;
         this.member = member;
